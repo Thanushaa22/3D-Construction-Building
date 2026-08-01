@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) || window.innerWidth < 768;
+
 export class AnimationSystem {
   constructor(scene, animatedObjects) {
     this.scene = scene;
@@ -17,7 +19,7 @@ export class AnimationSystem {
   }
 
   _createDustParticles() {
-    const count = 100;
+    const count = isMobile ? 30 : 100;
     const geo = new THREE.BufferGeometry();
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
@@ -39,7 +41,7 @@ export class AnimationSystem {
   }
 
   _createFireflies() {
-    const count = 30;
+    const count = isMobile ? 10 : 30;
     const geo = new THREE.BufferGeometry();
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
@@ -71,7 +73,7 @@ export class AnimationSystem {
 
   _startRain() {
     if (this.rainSystem) return;
-    const count = 800;
+    const count = isMobile ? 200 : 800;
     const geo = new THREE.BufferGeometry();
     const pos = new Float32Array(count * 3);
     const vel = new Float32Array(count);

@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) || window.innerWidth < 768;
+
 const timePresets = {
   golden: {
     skyTop: new THREE.Color(0x5a8ac5),
@@ -69,7 +71,7 @@ export class LightingSystem {
     this.sun = new THREE.DirectionalLight(0xffb060, 2.5);
     this.sun.position.set(20, 12, 15);
     this.sun.castShadow = true;
-    this.sun.shadow.mapSize.set(2048, 2048);
+    this.sun.shadow.mapSize.set(isMobile ? 1024 : 2048, isMobile ? 1024 : 2048);
     this.sun.shadow.camera.near = 0.5;
     this.sun.shadow.camera.far = 80;
     this.sun.shadow.camera.left = -35;
@@ -87,7 +89,7 @@ export class LightingSystem {
 
     // Interior warm lights
     this.interiorLights = [];
-    const intLightPositions = [
+    const allIntLights = [
       [0, 2.8, 6, 2, 15],       // Dining
       [-8, 2.8, -3, 1.8, 14],   // Kitchen
       [-10, 2.5, 5, 2.5, 15],   // Living
@@ -100,6 +102,9 @@ export class LightingSystem {
       [0, 1.5, 10, 1, 8],       // Entrance
       [-2, 1.8, 2, 1.5, 10],    // Staircase
     ];
+    const intLightPositions = isMobile
+      ? allIntLights.filter((_, i) => i % 2 === 0)
+      : allIntLights;
     intLightPositions.forEach(([x, y, z, i, d]) => {
       const l = new THREE.PointLight(0xffd4a0, i, d);
       l.position.set(x, y, z);
@@ -122,7 +127,7 @@ export class LightingSystem {
     });
 
     // Sky dome
-    this.skyGeo = new THREE.SphereGeometry(100, 32, 16);
+    this.skyGeo = new THREE.SphereGeometry(100, isMobile ? 16 : 32, isMobile ? 8 : 16);
     this.skyMat = new THREE.ShaderMaterial({
       uniforms: {
         topColor: { value: new THREE.Color(0x4a7ab5) },

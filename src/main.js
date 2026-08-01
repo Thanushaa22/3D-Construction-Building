@@ -14,18 +14,20 @@ let isStarted = false;
 let isTourMode = false;
 let tourTimer = null;
 
+const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) || window.innerWidth < 768;
+
 function init() {
   clock = new THREE.Clock();
 
   renderer = new THREE.WebGLRenderer({
     canvas: document.getElementById('c'),
-    antialias: true,
+    antialias: !isMobile,
     powerPreference: 'high-performance',
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.5;
   renderer.outputColorSpace = THREE.SRGBColorSpace;

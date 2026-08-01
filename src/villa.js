@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { M } from './materials.js';
 
+const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) || window.innerWidth < 768;
 const mp = (c, r, m) => new THREE.MeshStandardMaterial({ color: c, roughness: r, metalness: m ?? 0 });
 const geo = {};
 let _t;
@@ -497,7 +498,8 @@ export function buildVilla(scene) {
   const PX = 0, PZ = 18, PW = 14, PD = 5;
   B(PW + 0.5, 0.85, PD + 0.5, M.concreteDk, PX, -0.22, PZ);
   B(PW, 0.75, PD, M.poolTile, PX, -0.1, PZ);
-  const poolWater = new THREE.Mesh(new THREE.PlaneGeometry(PW - 0.2, PD - 0.2, 24, 24), M.water);
+  const poolSeg = isMobile ? 12 : 24;
+  const poolWater = new THREE.Mesh(new THREE.PlaneGeometry(PW - 0.2, PD - 0.2, poolSeg, poolSeg), M.water);
   poolWater.rotation.x = -Math.PI / 2;
   poolWater.position.set(PX, 0.22, PZ);
   _t.add(poolWater);
