@@ -110,6 +110,3 @@ The site auto-deploys to GitHub Pages via GitHub Actions on every push to `maste
 
 ---
 
-## License
-
-MIT
