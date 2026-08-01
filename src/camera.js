@@ -122,7 +122,6 @@ export class CameraSystem {
       this.targetPitch = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, this.targetPitch));
     });
 
-    // Right-click drag for look
     this.domElement.addEventListener('contextmenu', e => e.preventDefault());
 
     document.addEventListener('keydown', e => {
@@ -133,7 +132,6 @@ export class CameraSystem {
       this.keys[e.key.toLowerCase()] = false;
     });
 
-    // Scroll zoom (both exterior and interior)
     this.domElement.addEventListener('wheel', e => {
       if (this.isTransitioning) return;
       const forward = new THREE.Vector3();
@@ -141,6 +139,53 @@ export class CameraSystem {
       const speed = this.isExterior ? 2 : 1;
       this.camera.position.addScaledVector(forward, -e.deltaY * 0.01 * speed);
     }, { passive: true });
+
+    // Touch controls
+    this.touchStart = null;
+    this.touchDist = 0;
+    this.twoFinger = false;
+
+    this.domElement.addEventListener('touchstart', e => {
+      e.preventDefault();
+      if (e.touches.length === 1) {
+        this.twoFinger = false;
+        this.touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      } else if (e.touches.length === 2) {
+        this.twoFinger = true;
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        this.touchDist = Math.sqrt(dx * dx + dy * dy);
+      }
+    }, { passive: false });
+
+    this.domElement.addEventListener('touchmove', e => {
+      e.preventDefault();
+      if (e.touches.length === 1 && !this.twoFinger && this.touchStart) {
+        const dx = e.touches[0].clientX - this.touchStart.x;
+        const dy = e.touches[0].clientY - this.touchStart.y;
+        this.touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+
+        this.targetYaw -= dx * this.lookSensitivity;
+        this.targetPitch -= dy * this.lookSensitivity;
+        this.targetPitch = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, this.targetPitch));
+      } else if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const delta = this.touchDist - dist;
+        this.touchDist = dist;
+
+        const forward = new THREE.Vector3();
+        this.camera.getWorldDirection(forward);
+        const speed = this.isExterior ? 2 : 1;
+        this.camera.position.addScaledVector(forward, delta * 0.02 * speed);
+      }
+    }, { passive: false });
+
+    this.domElement.addEventListener('touchend', e => {
+      this.touchStart = null;
+      if (e.touches.length < 2) this.twoFinger = false;
+    });
   }
 
   goTo(index) {
