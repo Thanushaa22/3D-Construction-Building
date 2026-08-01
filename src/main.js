@@ -19,11 +19,35 @@ const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) || 
 function init() {
   clock = new THREE.Clock();
 
-  renderer = new THREE.WebGLRenderer({
-    canvas: document.getElementById('c'),
+  const canvas = document.getElementById('c');
+  const opts = {
+    canvas,
     antialias: !isMobile,
     powerPreference: 'high-performance',
-  });
+    failIfMajorPerformanceCaveat: false,
+  };
+
+  try {
+    renderer = new THREE.WebGLRenderer(opts);
+  } catch (e1) {
+    try {
+      opts.antialias = false;
+      renderer = new THREE.WebGLRenderer(opts);
+    } catch (e2) {
+      try {
+        opts.powerPreference = 'default';
+        renderer = new THREE.WebGLRenderer(opts);
+      } catch (e3) {
+        document.getElementById('loader').innerHTML =
+          '<div style="color:#c9a96e;font-family:monospace;font-size:13px;padding:2rem;text-align:center;max-width:400px">' +
+          'WebGL is not supported on this device.<br><br>' +
+          'Please try a different browser or device with WebGL support.' +
+          '</div>';
+        return;
+      }
+    }
+  }
+
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
