@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Apex Structures — Premium Construction & Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow-x:hidden;background:#050505;color:#fff;font-family:'Inter',sans-serif}
+::selection{background:rgba(200,170,120,.3)}
+
+/* ── Loading ── */
+#loader{position:fixed;inset:0;background:#050505;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 1.4s cubic-bezier(.4,0,.2,1),visibility 1.4s}
+#loader.done{opacity:0;visibility:hidden;pointer-events:none}
+.ld-brand{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,3rem);font-weight:400;letter-spacing:.4em;text-transform:uppercase;opacity:0;animation:fu 1s ease .3s forwards}
+.ld-sub{font-size:.6rem;letter-spacing:.55em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:3.5rem;opacity:0;animation:fu 1s ease .6s forwards}
+.ld-track{width:200px;height:1px;background:rgba(255,255,255,.06);position:relative;opacity:0;animation:fu 1s ease .9s forwards}
+.ld-fill{height:100%;background:linear-gradient(90deg,rgba(200,170,120,.6),rgba(200,170,120,1));width:0%;transition:width .35s ease}
+.ld-pct{font-size:.55rem;letter-spacing:.3em;margin-top:1.4rem;color:rgba(255,255,255,.25);opacity:0;animation:fu 1s ease 1.2s forwards}
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Start ── */
+#start{position:fixed;bottom:12vh;left:50%;transform:translateX(-50%);z-index:9998;background:0 0;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);padding:14px 52px;font-family:'Inter',sans-serif;font-size:.6rem;letter-spacing:.4em;text-transform:uppercase;cursor:pointer;transition:all .5s ease;opacity:0;visibility:hidden;backdrop-filter:blur(10px)}
+#start.show{opacity:1;visibility:visible}
+#start:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.35);color:#fff}
+
+/* ── Canvas ── */
+#c{position:fixed;inset:0;width:100%;height:100%;z-index:1}
+
+/* ── Scroll spacer ── */
+#scroll{position:relative;z-index:2;pointer-events:none}
+.sec{height:100vh;position:relative;display:flex;align-items:center;pointer-events:none}
+
+/* ── Content panels ── */
+.pnl{position:relative;z-index:10;pointer-events:auto;max-width:560px;padding:2rem;opacity:0;transform:translateY(40px);transition:all 1s cubic-bezier(.16,1,.3,1)}
+.pnl.vis{opacity:1;transform:translateY(0)}
+.pnl h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5.5vw,4.2rem);font-weight:400;line-height:1.1;margin-bottom:1rem}
+.pnl h2{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3.2vw,2.4rem);font-weight:400;line-height:1.2;margin-bottom:.8rem}
+.pnl p{font-size:.82rem;line-height:1.95;color:rgba(255,255,255,.5);font-weight:300}
+.pnl .tag{font-size:.5rem;letter-spacing:.45em;text-transform:uppercase;color:rgba(200,170,120,.6);margin-bottom:1.4rem}
+.pnl .ln{width:44px;height:1px;background:linear-gradient(90deg,rgba(200,170,120,.5),transparent);margin:1.5rem 0}
+.pnl .stats{display:flex;gap:3rem;margin-top:1.8rem}
+.pnl .stats div .n{font-family:'Playfair Display',serif;font-size:2rem}
+.pnl .stats div .l{font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:.35rem}
+.pnl.left{margin-right:auto;margin-left:7vw}
+.pnl.right{margin-left:auto;margin-right:7vw;text-align:right}
+.pnl.right .ln{margin-left:auto}
+.pnl.ctr{text-align:center;max-width:680px;margin:0 auto}
+
+/* ── Nav ── */
+#nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:22px 44px;opacity:0;transform:translateY(-12px);transition:all .7s cubic-bezier(.16,1,.3,1);pointer-events:none}
+#nav.on{opacity:1;transform:translateY(0);pointer-events:auto}
+.nav-logo{font-family:'Playfair Display',serif;font-size:.8rem;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.nav-logo span{color:rgba(200,170,120,.8)}
+.nav-links{display:flex;gap:2.2rem}
+.nav-links a{font-size:.55rem;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:color .3s;cursor:pointer;pointer-events:auto}
+.nav-links a:hover{color:rgba(255,255,255,.8)}
+
+/* ── Progress dots ── */
+#prog{position:fixed;right:36px;top:50%;transform:translateY(-50%);z-index:200;display:flex;flex-direction:column;gap:14px;opacity:0;transition:opacity .6s;pointer-events:none}
+#prog.on{opacity:1}
+.pd{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.1);transition:all .4s;cursor:pointer;pointer-events:auto}
+.pd.a{background:rgba(200,170,120,.8);box-shadow:0 0 8px rgba(200,170,120,.3);transform:scale(1.5)}
+
+/* ── Section labels ── */
+.sec-label{position:fixed;left:36px;top:50%;transform:translateY(-50%) rotate(-90deg);transform-origin:left center;z-index:200;font-size:.5rem;letter-spacing:.4em;text-transform:uppercase;color:rgba(255,255,255,.15);opacity:0;transition:opacity .5s;pointer-events:none;white-space:nowrap}
+.sec-label.on{opacity:1}
+
+/* ── CTA ── */
+.cta{display:inline-block;margin-top:1.6rem;padding:12px 38px;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.55);font-size:.55rem;letter-spacing:.35em;text-transform:uppercase;text-decoration:none;transition:all .4s;pointer-events:auto}
+.cta:hover{background:rgba(255,255,255,.05);border-color:rgba(200,170,120,.4);color:rgba(200,170,120,.9)}
+
+/* ── Service cards ── */
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:1.8rem;pointer-events:auto}
+.svc{padding:1.6rem;border:1px solid rgba(255,255,255,.04);background:rgba(255,255,255,.015);backdrop-filter:blur(6px);transition:all .5s;opacity:0;transform:translateY(24px)}
+.svc:hover{border-color:rgba(200,170,120,.15);background:rgba(255,255,255,.03)}
+.svc.vis{opacity:1;transform:translateY(0)}
+.svc h3{font-family:'Playfair Display',serif;font-size:.9rem;font-weight:400;margin-bottom:.5rem;color:rgba(255,255,255,.9)}
+.svc p{font-size:.68rem;line-height:1.75;color:rgba(255,255,255,.35)}
+
+/* ── Project cards ── */
+.proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:1.8rem;pointer-events:auto}
+.proj{position:relative;height:240px;border:1px solid rgba(255,255,255,.04);overflow:hidden;cursor:pointer;transition:all .6s;opacity:0;transform:translateY(24px)}
+.proj:hover{border-color:rgba(200,170,120,.2)}
+.proj.vis{opacity:1;transform:translateY(0)}
+.proj .pbg{position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,170,120,.04),rgba(255,255,255,.01));transition:all .5s}
+.proj:hover .pbg{background:linear-gradient(135deg,rgba(200,170,120,.08),rgba(255,255,255,.02))}
+.proj .pi{position:absolute;bottom:0;left:0;right:0;padding:1.4rem;background:linear-gradient(transparent,rgba(0,0,0,.7))}
+.proj .pi h3{font-family:'Playfair Display',serif;font-size:.95rem;margin-bottom:.25rem}
+.proj .pi span{font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+
+/* ── Contact ── */
+.cform{margin-top:1.6rem;pointer-events:auto}
+.frow{display:flex;gap:1rem;margin-bottom:1rem}
+.frow input,.frow textarea{flex:1;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:#fff;padding:13px 16px;font-family:'Inter',sans-serif;font-size:.72rem;outline:none;transition:border-color .3s}
+.frow input:focus,.frow textarea:focus{border-color:rgba(200,170,120,.3)}
+.frow textarea{height:100px;resize:none}
+.frow input::placeholder,.frow textarea::placeholder{color:rgba(255,255,255,.15)}
+.sbtn{background:0 0;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.55);padding:13px 44px;font-family:'Inter',sans-serif;font-size:.55rem;letter-spacing:.35em;text-transform:uppercase;cursor:pointer;transition:all .4s}
+.sbtn:hover{background:rgba(200,170,120,.08);border-color:rgba(200,170,120,.3);color:rgba(200,170,120,.9)}
+
+/* ── Footer ── */
+#foot{position:relative;z-index:10;padding:3rem 44px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,.04);pointer-events:auto}
+#foot span{font-size:.5rem;letter-spacing:.2em;color:rgba(255,255,255,.2)}
+#foot .fl{display:flex;gap:2rem}
+#foot .fl a{font-size:.5rem;letter-spacing:.15em;color:rgba(255,255,255,.2);text-decoration:none;transition:color .3s}
+#foot .fl a:hover{color:rgba(255,255,255,.5)}
+
+/* ── Scroll hint ── */
+#scrollHint{position:fixed;bottom:5vh;left:50%;transform:translateX(-50%);z-index:200;text-align:center;opacity:0;transition:opacity .6s;pointer-events:none}
+#scrollHint.on{opacity:1}
+#scrollHint span{font-size:.5rem;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.2);display:block;margin-bottom:.6rem}
+.scroll-arrow{width:18px;height:18px;border-right:1px solid rgba(255,255,255,.2);border-bottom:1px solid rgba(255,255,255,.2);transform:rotate(45deg);margin:0 auto;animation:arrowBounce 2s ease infinite}
+@keyframes arrowBounce{0%,100%{transform:translateY(0) rotate(45deg)}50%{transform:translateY(6px) rotate(45deg)}}
+</style>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/" } }
+</script>
+  <script type="module" crossorigin src="/assets/index-BoaP4Wxh.js"></script>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loader">
+  <div class="ld-brand">Apex Structures</div>
+  <div class="ld-sub">Premium Construction & Architecture</div>
+  <div class="ld-track"><div class="ld-fill" id="ldFill"></div></div>
+  <div class="ld-pct" id="ldPct">0%</div>
+</div>
+
+<button id="start">Enter Experience</button>
+<canvas id="c"></canvas>
+
+<!-- Nav -->
+<nav id="nav">
+  <div class="nav-logo">Apex<span>.</span></div>
+  <div class="nav-links">
+    <a data-g="0">Home</a>
+    <a data-g="1">About</a>
+    <a data-g="2">Services</a>
+    <a data-g="3">Projects</a>
+    <a data-g="4">Contact</a>
+  </div>
+</nav>
+
+<div id="prog">
+  <div class="pd a" data-g="0"></div>
+  <div class="pd" data-g="1"></div>
+  <div class="pd" data-g="2"></div>
+  <div class="pd" data-g="3"></div>
+  <div class="pd" data-g="4"></div>
+</div>
+
+<div class="sec-label" id="secLabel">Home</div>
+
+<div id="scrollHint" class="on">
+  <span>Scroll to explore</span>
+  <div class="scroll-arrow"></div>
+</div>
+
+<!-- Scroll sections -->
+<div id="scroll">
+
+  <div class="sec" data-s="0">
+    <div class="pnl left">
+      <div class="tag">Est. 2008 — New York</div>
+      <h1>Building Tomorrow's Landmarks</h1>
+      <div class="ln"></div>
+      <p>We craft architectural masterpieces that redefine skylines. From vision to reality, Apex Structures delivers precision-engineered residences and commercial towers that stand as testaments to human ambition.</p>
+      <div class="stats">
+        <div><div class="n">240+</div><div class="l">Projects Completed</div></div>
+        <div><div class="n">$3.2B</div><div class="l">Portfolio Value</div></div>
+        <div><div class="n">16</div><div class="l">Years of Excellence</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" data-s="1">
+    <div class="pnl right">
+      <div class="tag">Our Philosophy</div>
+      <h2>Where Vision Meets Precision</h2>
+      <div class="ln"></div>
+      <p>Every beam, every joint, every surface is placed with intentionality. Our team of 350+ professionals transforms ambitious blueprints into living spaces that inspire. This villa represents our signature approach — luxury without compromise.</p>
+      <a class="cta" data-g="2">Our Services</a>
+    </div>
+  </div>
+
+  <div class="sec" data-s="2">
+    <div class="pnl ctr">
+      <div class="tag">What We Do</div>
+      <h2>Comprehensive Construction</h2>
+      <div class="ln" style="margin:1.5rem auto"></div>
+      <div class="svc-grid">
+        <div class="svc"><h3>Luxury Residences</h3><p>Bespoke villas and homes where premium craftsmanship meets contemporary design in every detail.</p></div>
+        <div class="svc"><h3>Commercial Towers</h3><p>Iconic high-rises that transform urban landscapes with innovative structural engineering.</p></div>
+        <div class="svc"><h3>Sustainable Build</h3><p>LEED-certified construction integrating cutting-edge green technology and smart systems.</p></div>
+        <div class="svc"><h3>Interior Design</h3><p>Full-service interior architecture from material selection to furniture curation.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" data-s="3">
+    <div class="pnl ctr">
+      <div class="tag">Featured Work</div>
+      <h2>Signature Projects</h2>
+      <div class="ln" style="margin:1.5rem auto"></div>
+      <div class="proj-grid">
+        <div class="proj"><div class="pbg"></div><div class="pi"><h3>Villa Lumière</h3><span>Luxury Residential — 8,400 sq ft</span></div></div>
+        <div class="proj"><div class="pbg"></div><div class="pi"><h3>One Meridian Plaza</h3><span>Commercial — 52 Floors</span></div></div>
+        <div class="proj"><div class="pbg"></div><div class="pi"><h3>The Veridian</h3><span>Luxury Residential — 38 Units</span></div></div>
+        <div class="proj"><div class="pbg"></div><div class="pi"><h3>Eco Tower</h3><span>Sustainable — LEED Platinum</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" data-s="4">
+    <div class="pnl left">
+      <div class="tag">Get In Touch</div>
+      <h2>Start Your Project</h2>
+      <div class="ln"></div>
+      <p>Ready to bring your vision to life? Our team guides you from concept through completion with unwavering attention to detail.</p>
+      <div class="cform">
+        <div class="frow"><input placeholder="Your Name"><input placeholder="Email Address"></div>
+        <div class="frow"><textarea placeholder="Tell us about your project..."></textarea></div>
+        <button class="sbtn">Send Inquiry</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="foot">
+  <span>© 2026 Apex Structures. All Rights Reserved.</span>
+  <div class="fl"><a href="#">Privacy</a><a href="#">Careers</a><a href="#">LinkedIn</a></div>
+</div>
+
+
+</body>
+</html>
